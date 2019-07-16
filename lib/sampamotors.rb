@@ -20,7 +20,7 @@ module Sampamotors
 
   class F1SalesCustom::Email::Parser
     def parse
-      parsed_email = @email.body.colons_to_hash(/(nome|email|telefone|produto).*?:/, false)
+      parsed_email = @email.body.colons_to_hash(/(nome|email|telefone|produto|mensagem).*?:/, false)
 
       {
         source: {
@@ -32,7 +32,7 @@ module Sampamotors
           email: parsed_email['email']
         },
         product: parsed_email['produto'],
-        message: '',
+        message: parsed_email['mensagem'],
       }
 
     end

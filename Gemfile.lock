@@ -15,7 +15,7 @@ GIT
 PATH
   remote: .
   specs:
-    sampamotors (0.1.0)
+    sampamotors (0.1.1)
 
 GEM
   remote: https://rubygems.org/

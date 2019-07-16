@@ -9,7 +9,7 @@ RSpec.describe F1SalesCustom::Email::Parser do
       email = OpenStruct.new
       email.to = [email: 'jivochat@lojateste.f1sales.org']
       email.subject = '[Jivochat Lead] Marcio Klepacz'
-      email.body = "\nnome: Marcio Klepacz email: marcioklepacz@citofoobar.com telefone: (11)\n98158-7311\nproduto: Civic 2010"
+      email.body = "\nnome: Marcio Klepacz email: marcioklepacz@citofoobar.com telefone: (11)\n98158-7311\nproduto: Civic 2010\nmensagem: Tem interesse no carro"
 
       email
     }
@@ -18,6 +18,10 @@ RSpec.describe F1SalesCustom::Email::Parser do
 
     it 'contains website form as source name' do
       expect(parsed_email[:source][:name]).to eq(F1SalesCustom::Email::Source.all.first[:name])
+    end
+
+    it 'contains message' do
+      expect(parsed_email[:message]).to eq('Tem interesse no carro')
     end
 
     it 'contains name' do
