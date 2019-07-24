@@ -37,8 +37,9 @@ module Sampamotors
 
     def parse_website
       parsed_email = @email.body.colons_to_hash
-      message = parsed_email['mensagem'].split("\n").first
-      message += "\n#{parsed_email['loja']}"
+      message = parsed_email['mensagem'].gsub("\n", ' ').gsub('--','')
+      store = parsed_email['loja']
+      message += " Unidade: #{store}" if store
 
       {
         source: {
@@ -51,6 +52,7 @@ module Sampamotors
         },
         product: parsed_email['produto'],
         message: message,
+        description: parsed_email['origem']
       }
     end
 

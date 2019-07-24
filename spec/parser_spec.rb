@@ -4,6 +4,44 @@ require "f1sales_custom/source"
 
 RSpec.describe F1SalesCustom::Email::Parser do
 
+  context 'when is a differnt email format' do
+    let(:email) do
+      email = OpenStruct.new
+      email.to = [email: 'website@lojateste.f1sales.org']
+      email.subject = 'Solicitação de cotação por artix1@gmail.com em EMPRESAS'
+      email.body = "*Site*: https://sampamotors.com.br/\n*Origem*: EMPRESAS\n*Nome*: Rogerio\n*E-mail*: artix1@gmail.com\n*Telefone*: (11) 99203-8916\n*Mensagem*:\nTenho interesse em comprar como Pessoa Jurídica CNPJ 30.364.741/0001-12.\nWR-V EXL 0Km"
+
+      email
+    end
+
+    let(:parsed_email) { described_class.new(email).parse }
+
+    it 'contains website form as source name' do
+      expect(parsed_email[:source][:name]).to eq(F1SalesCustom::Email::Source.all[1][:name])
+    end
+
+    it 'contains name' do
+      expect(parsed_email[:customer][:name]).to eq('Rogerio')
+    end
+
+    it 'contains email' do
+      expect(parsed_email[:customer][:email]).to eq('artix1@gmail.com')
+    end
+
+    it 'contains description' do
+      expect(parsed_email[:description]).to eq('EMPRESAS')
+    end
+
+    it 'contains phone' do
+      expect(parsed_email[:customer][:phone]).to eq('11992038916')
+    end
+
+    it 'contains message' do
+      expect(parsed_email[:message]).to eq("Tenho interesse em comprar como Pessoa Jurídica CNPJ 30.364.741/0001-12. WR-V EXL 0Km")
+    end
+    
+  end
+
   context 'when email is from website form' do
     let(:email) do
       email = OpenStruct.new
@@ -33,7 +71,7 @@ RSpec.describe F1SalesCustom::Email::Parser do
     end
 
     it 'contains message' do
-      expect(parsed_email[:message]).to eq("Possível cliente PCD\nPonte Piqueri")
+      expect(parsed_email[:message]).to eq("Possível cliente PCD - Unidade: Ponte Piqueri")
     end
 
   end
