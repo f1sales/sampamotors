@@ -20,7 +20,7 @@ module Sampamotors
         },
         {
           email_id: 'website',
-          name: 'Website - Serviços e Peças.'
+          name: 'Website - Serviços e Peças'
         },
       ]
     end
