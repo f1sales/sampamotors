@@ -39,17 +39,21 @@ module Sampamotors
 
     private 
 
+    WANTS_TO_SELL = 'solicitação de venda'
+
     def parse_website
       parsed_email = @email.body.colons_to_hash
       message = (parsed_email['mensagem'] || '').gsub("\n", ' ').gsub('--','')
       store = parsed_email['loja']
       message += " Unidade: #{store}" if store
       all_sources = F1SalesCustom::Email::Source.all
-      is_about_sell = @email.subject.downcase.include?('solicitação de venda')
+      is_about_sell = @email.subject.downcase.include?(WANTS_TO_SELL)
       source = is_about_sell ? all_sources[2] : all_sources[1]
       product = parsed_email['produto'] || parsed_email['marcamodelo']
 
       message += "Portas: #{parsed_email['portas']} Quilometragem: #{parsed_email['quilometragem']} Ano: #{parsed_email['ano']} Cambio: #{parsed_email['cambio']}" if is_about_sell
+      description = parsed_email['origem'] || ''
+      description += " #{WANTS_TO_SELL}" if is_about_sell
 
       {
         source: {
@@ -62,7 +66,7 @@ module Sampamotors
         },
         product: product,
         message: message,
-        description: parsed_email['origem'],
+        description: description,
       }
     end
 
