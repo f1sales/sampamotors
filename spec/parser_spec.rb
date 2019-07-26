@@ -4,6 +4,43 @@ require "f1sales_custom/source"
 
 RSpec.describe F1SalesCustom::Email::Parser do
 
+  context 'when is an email to sell a car' do
+    let(:email) do
+      email = OpenStruct.new
+      email.to = [email: 'website@lojateste.f1sales.org']
+      email.subject = 'Solicitação de venda de carro por iendis@yahoo.com.br'
+      email.body = "*Site*: https://sampamotors.com.br/\n*Origem*: EMPRESAS\n*Nome*: Sidnei Alves\n*E-mail*: artix1@gmail.com\n*Telefone*: (11) 99203-8916\n*Portas*: 4\n*Marca/Modelo*: Hyundai HB20\n*Quilometragem*: 67000\n*Ano*: 2015\n*Cambio*: manual\n*Portas*: 4"
+
+      email
+    end
+
+    let(:parsed_email) { described_class.new(email).parse }
+
+    it 'contains website form as source name' do
+      expect(parsed_email[:source][:name]).to eq(F1SalesCustom::Email::Source.all[2][:name])
+    end
+
+    it 'contains name' do
+      expect(parsed_email[:customer][:name]).to eq('Sidnei Alves')
+    end
+
+    it 'contains email' do
+      expect(parsed_email[:customer][:email]).to eq('artix1@gmail.com')
+    end
+
+    it 'contains phone' do
+      expect(parsed_email[:customer][:phone]).to eq('11992038916')
+    end
+
+    it 'contains product' do
+      expect(parsed_email[:product]).to eq('Hyundai HB20')
+    end
+
+    it 'contains message' do
+      expect(parsed_email[:message]).to eq('Portas: 4 Quilometragem: 67000 Ano: 2015 Cambio: manual')
+    end
+  end
+
   context 'when is a differnt email format' do
     let(:email) do
       email = OpenStruct.new
