@@ -117,6 +117,24 @@ RSpec.describe F1SalesCustom::Email::Parser do
 
   end
 
+  context 'when email is from jivochat and is used' do
+    let(:email){ 
+      email = OpenStruct.new
+      email.to = [email: 'jivochat@lojateste.f1sales.org']
+      email.subject = '[Jivochat Lead] Marcio Klepacz'
+      email.body = "nome: Marcio Teste\ntelefone: 11981587311\ntipo: seminovos\nemail: marcio@teste.com.br\nproduto: Honda Fit\nmensagem: Tem interesse no carro"
+
+      email
+    }
+
+    let(:parsed_email) { described_class.new(email).parse }
+
+    it 'contains website form as source name' do
+      expect(parsed_email[:source][:name]).to eq(F1SalesCustom::Email::Source.all[3][:name])
+    end
+    
+  end
+
   context 'when email is from jivochat' do
     let(:email){ 
       email = OpenStruct.new

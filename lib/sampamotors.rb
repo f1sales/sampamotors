@@ -22,6 +22,10 @@ module Sampamotors
           email_id: 'website',
           name: 'Website - Serviços e Peças'
         },
+        {
+          email_id: 'jivochat',
+          name: 'JivoChat - Seminovos'
+        },
       ]
     end
   end
@@ -71,11 +75,14 @@ module Sampamotors
     end
 
     def parse_jivochat
-      parsed_email = @email.body.colons_to_hash(/(nome|email|telefone|produto|mensagem).*?:/, false)
+      parsed_email = @email.body.colons_to_hash(/(nome|email|tipo|telefone|produto|mensagem).*?:/, false)
+      sources = F1SalesCustom::Email::Source.all
+      source = sources[0]
+      source = sources[3] if (parsed_email['tipo'] || '').downcase.include?('seminovos')
 
       {
         source: {
-          name: F1SalesCustom::Email::Source.all.first[:name],
+          name: source[:name],
         },
         customer: {
           name: parsed_email['nome'],
