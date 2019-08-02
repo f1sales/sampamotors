@@ -9,7 +9,7 @@ RSpec.describe F1SalesCustom::Email::Parser do
       email = OpenStruct.new
       email.to = [email: 'website@lojateste.f1sales.org']
       email.subject = 'Solicitação de venda de carro por iendis@yahoo.com.br'
-      email.body = "*Site*: https://sampamotors.com.br/\n*Nome*: Sidnei Alves\n*E-mail*: artix1@gmail.com\n*Telefone*: (11) 99203-8916\n*Portas*: 4\n*Marca/Modelo*: Hyundai HB20\n*Quilometragem*: 67000\n*Ano*: 2015\n*Cambio*: manual\n*Portas*: 4"
+      email.body = "Site: https://sampamotors.com.br/Nome: Teste IgnorarE-mail: email_teste_ignorar@gmail.comTelefone: (11) 98158-7311Portas: 4Marca/Modelo: Marca TesteQuilometragem: 120.000Ano: 2006Cambio: automatico"
 
       email
     end
@@ -21,19 +21,19 @@ RSpec.describe F1SalesCustom::Email::Parser do
     end
 
     it 'contains name' do
-      expect(parsed_email[:customer][:name]).to eq('Sidnei Alves')
+      expect(parsed_email[:customer][:name]).to eq('Teste Ignorar')
     end
 
     it 'contains email' do
-      expect(parsed_email[:customer][:email]).to eq('artix1@gmail.com')
+      expect(parsed_email[:customer][:email]).to eq('email_teste_ignorar@gmail.com')
     end
 
     it 'contains phone' do
-      expect(parsed_email[:customer][:phone]).to eq('11992038916')
+      expect(parsed_email[:customer][:phone]).to eq('11981587311')
     end
 
     it 'contains product' do
-      expect(parsed_email[:product]).to eq('Hyundai HB20')
+      expect(parsed_email[:product]).to eq('Marca Teste')
     end
 
     it 'contains description' do
@@ -41,7 +41,7 @@ RSpec.describe F1SalesCustom::Email::Parser do
     end
 
     it 'contains message' do
-      expect(parsed_email[:message]).to eq('Portas: 4 Quilometragem: 67000 Ano: 2015 Cambio: manual')
+      expect(parsed_email[:message]).to eq('Portas: 4 Quilometragem: 120.000 Ano: 2006 Cambio: automatico')
     end
   end
 
