@@ -73,7 +73,7 @@ module Sampamotors
           phone: parsed_email['telefone'].tr('^0-9', ''),
           email: parsed_email['email']
         },
-        product: product,
+        product: product || '',
         message: message,
         description: description,
       }
