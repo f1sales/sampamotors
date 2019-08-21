@@ -50,12 +50,14 @@ module Sampamotors
     WANTS_TO_SELL = 'solicitação de venda'
     PRICE = 'cotação'
     AFTER_SELL = 'pós vendas'
+    ACCESSORIES = 'acessorios'
 
     def parse_website
       all_sources = F1SalesCustom::Email::Source.all
       is_about_sell = @email.subject.downcase.include?(WANTS_TO_SELL)
       is_about_price = @email.subject.downcase.include?(PRICE)
       is_about_after_sell = @email.subject.downcase.include?(AFTER_SELL)
+      is_about_serice = @email.subject.downcase.include?(ACCESSORIES)
 
       parsed_email = @email.body.colons_to_hash
       parsed_email = @email.body.colons_to_hash(/(Nome|Origem|Cambio|Ano|Portas|Quilometragem|Marca\/Modelo|Mensagem|E-mail|Email|Tipo|Telefone|produto|mensagem).*?:/, false) if is_about_sell or is_about_price
@@ -66,6 +68,7 @@ module Sampamotors
 
       source = is_about_sell ? all_sources[2] : all_sources[1]
       source = all_sources[4] if is_about_after_sell
+      source = all_sources[2] if is_about_serice
 
       product = parsed_email['produto'] || parsed_email['marcamodelo']
 

@@ -75,6 +75,24 @@ RSpec.describe F1SalesCustom::Email::Parser do
 
   end
 
+  context 'when is about acessories' do
+    let(:email) do
+      email = OpenStruct.new
+      email.to = [email: 'website@lojateste.f1sales.org']
+      email.subject = 'Solicitação de cotação por artix1@gmail.com em /acessorios-e-pecas'
+      email.body = "*Site*: https://sampamotors.com.br/\n*Origem*: /acessorios-e-pecas\n*Nome*: Rogerio\n*E-mail*: artix1@gmail.com\n*Telefone*: (11) 99203-8916\n*Mensagem*:\nTenho interesse em comprar como Pessoa Jurídica CNPJ 30.364.741/0001-12.\nWR-V EXL 0Km"
+
+      email
+    end
+
+    let(:parsed_email) { described_class.new(email).parse }
+
+    it 'contains website form as source name' do
+      expect(parsed_email[:source][:name]).to eq(F1SalesCustom::Email::Source.all[2][:name])
+    end
+
+  end
+
   context 'when is an email to sell a car' do
     let(:email) do
       email = OpenStruct.new
