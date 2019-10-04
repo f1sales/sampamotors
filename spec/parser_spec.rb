@@ -224,6 +224,24 @@ RSpec.describe F1SalesCustom::Email::Parser do
     
   end
 
+  context 'when is email is from Honda Social' do
+    let(:email){ 
+      email = OpenStruct.new
+      email.to = [email: 'hondasocial@lojateste.f1sales.org']
+      email.subject = '[Honda Social Lead] Marcio Klepacz'
+      email.body = "nome: Marcio Teste\ntelefone: 11981587311\nemail: marcio@teste.com.br\nproduto: Honda Fit\nmensagem: Tem interesse no carro"
+
+      email
+    }
+
+    let(:parsed_email) { described_class.new(email).parse }
+
+    it 'contains honda social form as source name' do
+      expect(parsed_email[:source][:name]).to eq(F1SalesCustom::Email::Source.all[5][:name])
+    end
+
+  end
+
   context 'when email is from jivochat' do
     let(:email){ 
       email = OpenStruct.new

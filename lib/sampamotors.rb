@@ -30,6 +30,10 @@ module Sampamotors
           email_id: 'website',
           name: 'Website - Pós Vendas'
         },
+        {
+          email_id: 'hondasocial',
+          name: 'Honda Social'
+        },
       ]
     end
   end
@@ -40,6 +44,8 @@ module Sampamotors
 
       if destinatary.include?('jivochat')
         parse_jivochat
+      elsif destinatary.include?('hondasocial')
+        parse_hondasocial
       elsif destinatary.include?('website')
         parse_website
       end
@@ -110,5 +116,24 @@ module Sampamotors
         message: parsed_email['mensagem'],
       }
     end
+
+    def parse_hondasocial
+      parsed_email = @email.body.colons_to_hash(/(nome|email|tipo|telefone|produto|mensagem).*?:/, false)
+      source = F1SalesCustom::Email::Source.all[5]
+
+      {
+        source: {
+          name: source[:name],
+        },
+        customer: {
+          name: parsed_email['nome'],
+          phone: parsed_email['telefone'].tr('^0-9', ''),
+          email: parsed_email['email']
+        },
+        product: parsed_email['produto'],
+        message: parsed_email['mensagem'],
+      }
+    end
+
   end  
 end
