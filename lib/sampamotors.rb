@@ -112,7 +112,7 @@ module Sampamotors
           phone: parsed_email['telefone'].tr('^0-9', ''),
           email: parsed_email['email']
         },
-        product: parsed_email['produto'],
+        product: parsed_email['produto'] || '',
         message: parsed_email['mensagem'],
       }
     end
