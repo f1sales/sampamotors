@@ -2,10 +2,25 @@ require "sampamotors/version"
 
 require "f1sales_custom/parser"
 require "f1sales_custom/source"
+require "f1sales_custom/hooks"
 require "f1sales_helpers"
 
 module Sampamotors
   class Error < StandardError; end
+
+  class F1SalesCustom::Hooks::Lead
+
+    class << self
+
+      def switch_source(lead)
+        if lead.source.name.downcase.include?('facebook') and lead.message.downcase.include?('seminovos')
+          lead.source.name + " - Seminovos"
+        else
+          lead.source.name
+        end
+      end
+    end
+  end
 
   class F1SalesCustom::Email::Source 
     def self.all

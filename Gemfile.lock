@@ -12,10 +12,17 @@ GIT
   specs:
     f1sales_custom-email (0.1.0)
 
+GIT
+  remote: https://github.com/marciok/f1sales_custom-hooks.git
+  revision: 3cad267b7ae5d68c09a2e70fcc3235dad2fdcfb2
+  branch: master
+  specs:
+    f1sales_custom-hooks (0.1.1)
+
 PATH
   remote: .
   specs:
-    sampamotors (0.2.1)
+    sampamotors (0.2.3)
 
 GEM
   remote: https://rubygems.org/
@@ -42,6 +49,7 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 2.0)
   f1sales_custom-email!
+  f1sales_custom-hooks!
   f1sales_helpers!
   rake (~> 10.0)
   rspec (~> 3.0)
