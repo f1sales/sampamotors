@@ -22,7 +22,7 @@ module Sampamotors
     end
   end
 
-  class F1SalesCustom::Email::Source 
+  class F1SalesCustom::Email::Source
     def self.all
       [
         {
@@ -55,7 +55,7 @@ module Sampamotors
 
   class F1SalesCustom::Email::Parser
     def parse
-      destinatary = @email.to.map { |email| email[:email].split('@').first } 
+      destinatary = @email.to.map { |email| email[:email].split('@').first }
 
       if destinatary.include?('jivochat')
         parse_jivochat
@@ -66,7 +66,7 @@ module Sampamotors
       end
     end
 
-    private 
+    private
 
     WANTS_TO_SELL = 'solicitação de venda'
     PRICE = 'cotação'
@@ -106,9 +106,9 @@ module Sampamotors
           phone: parsed_email['telefone'].tr('^0-9', ''),
           email: parsed_email['email']
         },
-        product: product || '',
+        product: { name: product || '' },
         message: message,
-        description: description,
+        description: description
       }
     end
 
@@ -127,8 +127,8 @@ module Sampamotors
           phone: parsed_email['telefone'].tr('^0-9', ''),
           email: parsed_email['email']
         },
-        product: parsed_email['produto'] || '',
-        message: parsed_email['mensagem'],
+        product: { name: parsed_email['produto'] || '' },
+        message: parsed_email['mensagem']
       }
     end
 
@@ -150,5 +150,5 @@ module Sampamotors
       }
     end
 
-  end  
+  end
 end
