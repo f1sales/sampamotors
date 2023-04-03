@@ -1,20 +1,18 @@
-require "sampamotors/version"
+require 'sampamotors/version'
 
-require "f1sales_custom/parser"
-require "f1sales_custom/source"
-require "f1sales_custom/hooks"
-require "f1sales_helpers"
+require 'f1sales_custom/parser'
+require 'f1sales_custom/source'
+require 'f1sales_custom/hooks'
+require 'f1sales_helpers'
 
 module Sampamotors
   class Error < StandardError; end
 
   class F1SalesCustom::Hooks::Lead
-
     class << self
-
       def switch_source(lead)
         if lead.source.name.downcase.include?('facebook') and lead.message.downcase.include?('seminovos')
-          lead.source.name + " - Seminovos"
+          lead.source.name + ' - Seminovos'
         else
           lead.source.name
         end
@@ -48,7 +46,7 @@ module Sampamotors
         {
           email_id: 'hondasocial',
           name: 'Honda Social'
-        },
+        }
       ]
     end
   end
@@ -81,9 +79,13 @@ module Sampamotors
       is_about_serice = @email.subject.downcase.include?(ACCESSORIES)
 
       parsed_email = @email.body.colons_to_hash
-      parsed_email = @email.body.colons_to_hash(/(Nome|Origem|Cambio|Ano|Portas|Quilometragem|Marca\/Modelo|Mensagem|E-mail|Email|Tipo|Telefone|produto|mensagem).*?:/, false) if is_about_sell or is_about_price
+      if is_about_sell or is_about_price
+        parsed_email = @email.body.colons_to_hash(
+          %r{(Nome|Origem|Cambio|Ano|Portas|Quilometragem|Marca/Modelo|Mensagem|E-mail|Email|Tipo|Telefone|produto|mensagem).*?:}, false
+        )
+      end
 
-      message = (parsed_email['mensagem'] || '').gsub("\n", ' ').gsub('--','')
+      message = (parsed_email['mensagem'] || '').gsub("\n", ' ').gsub('--', '')
       store = parsed_email['loja']
       message += " Unidade: #{store}" if store
 
@@ -93,13 +95,15 @@ module Sampamotors
 
       product = parsed_email['produto'] || parsed_email['marcamodelo']
 
-      message += "Portas: #{parsed_email['portas']} Quilometragem: #{parsed_email['quilometragem']} Ano: #{parsed_email['ano']} Cambio: #{parsed_email['cambio']}" if is_about_sell
+      if is_about_sell
+        message += "Portas: #{parsed_email['portas']} Quilometragem: #{parsed_email['quilometragem']} Ano: #{parsed_email['ano']} Cambio: #{parsed_email['cambio']}"
+      end
       description = parsed_email['origem'] || ''
       description += " #{WANTS_TO_SELL}" if is_about_sell
 
       {
         source: {
-          name: source[:name],
+          name: source[:name]
         },
         customer: {
           name: parsed_email['nome'],
@@ -120,7 +124,7 @@ module Sampamotors
 
       {
         source: {
-          name: source[:name],
+          name: source[:name]
         },
         customer: {
           name: parsed_email['nome'],
@@ -138,7 +142,7 @@ module Sampamotors
 
       {
         source: {
-          name: source[:name],
+          name: source[:name]
         },
         customer: {
           name: parsed_email['nome'],
@@ -146,9 +150,8 @@ module Sampamotors
           email: parsed_email['email']
         },
         product: parsed_email['produto'],
-        message: parsed_email['mensagem'],
+        message: parsed_email['mensagem']
       }
     end
-
   end
 end
