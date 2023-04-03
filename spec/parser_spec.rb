@@ -1,9 +1,8 @@
 require 'ostruct'
-require "f1sales_custom/parser"
-require "f1sales_custom/source"
+require 'f1sales_custom/parser'
+require 'f1sales_custom/source'
 
 RSpec.describe F1SalesCustom::Email::Parser do
-
   context 'when is about after sell' do
     let(:email) do
       email = OpenStruct.new
@@ -21,7 +20,7 @@ RSpec.describe F1SalesCustom::Email::Parser do
     end
 
     it 'contains name' do
-      expect(parsed_email[:customer][:name]).to eq('Nagila sales') 
+      expect(parsed_email[:customer][:name]).to eq('Nagila sales')
     end
 
     it 'contains email' do
@@ -72,7 +71,6 @@ RSpec.describe F1SalesCustom::Email::Parser do
     it 'contains message' do
       expect(parsed_email[:message]).to eq('Olá, gostaria de saber as condições para CNPJ por favor. Modelo: Fit ou Civic ou wrv')
     end
-
   end
 
   context 'when is about acessories' do
@@ -90,7 +88,6 @@ RSpec.describe F1SalesCustom::Email::Parser do
     it 'contains website form as source name' do
       expect(parsed_email[:source][:name]).to eq(F1SalesCustom::Email::Source.all[2][:name])
     end
-
   end
 
   context 'when is an email to sell a car' do
@@ -98,7 +95,7 @@ RSpec.describe F1SalesCustom::Email::Parser do
       email = OpenStruct.new
       email.to = [email: 'website@lojateste.f1sales.org']
       email.subject = 'Solicitação de venda de carro por iendis@yahoo.com.br'
-      email.body = "Site: https://sampamotors.com.br/Nome: Teste IgnorarE-mail: email_teste_ignorar@gmail.comTelefone: (11) 98158-7311Portas: 4Marca/Modelo: Marca TesteQuilometragem: 120.000Ano: 2006Cambio: automatico"
+      email.body = 'Site: https://sampamotors.com.br/Nome: Teste IgnorarE-mail: email_teste_ignorar@gmail.comTelefone: (11) 98158-7311Portas: 4Marca/Modelo: Marca TesteQuilometragem: 120.000Ano: 2006Cambio: automatico'
 
       email
     end
@@ -167,9 +164,8 @@ RSpec.describe F1SalesCustom::Email::Parser do
     end
 
     it 'contains message' do
-      expect(parsed_email[:message]).to eq("Tenho interesse em comprar como Pessoa Jurídica CNPJ 30.364.741/0001-12. WR-V EXL 0Km")
+      expect(parsed_email[:message]).to eq('Tenho interesse em comprar como Pessoa Jurídica CNPJ 30.364.741/0001-12. WR-V EXL 0Km')
     end
-    
   end
 
   context 'when email is from website form' do
@@ -201,56 +197,53 @@ RSpec.describe F1SalesCustom::Email::Parser do
     end
 
     it 'contains message' do
-      expect(parsed_email[:message]).to eq("Possível cliente PCD - Unidade: Ponte Piqueri")
+      expect(parsed_email[:message]).to eq('Possível cliente PCD - Unidade: Ponte Piqueri')
     end
-
   end
 
   context 'when email is from jivochat and is used' do
-    let(:email){ 
+    let(:email) do
       email = OpenStruct.new
       email.to = [email: 'jivochat@lojateste.f1sales.org']
       email.subject = '[Jivochat Lead] Marcio Klepacz'
       email.body = "nome: Marcio Teste\ntelefone: 11981587311\ntipo: seminovos\nemail: marcio@teste.com.br\nproduto: Honda Fit\nmensagem: Tem interesse no carro"
 
       email
-    }
+    end
 
     let(:parsed_email) { described_class.new(email).parse }
 
     it 'contains website form as source name' do
       expect(parsed_email[:source][:name]).to eq(F1SalesCustom::Email::Source.all[3][:name])
     end
-    
   end
 
   context 'when is email is from Honda Social' do
-    let(:email){ 
+    let(:email) do
       email = OpenStruct.new
       email.to = [email: 'hondasocial@lojateste.f1sales.org']
       email.subject = '[Honda Social Lead] Marcio Klepacz'
       email.body = "nome: Marcio Teste\ntelefone: 11981587311\nemail: marcio@teste.com.br\nproduto: Honda Fit\nmensagem: Tem interesse no carro"
 
       email
-    }
+    end
 
     let(:parsed_email) { described_class.new(email).parse }
 
     it 'contains honda social form as source name' do
       expect(parsed_email[:source][:name]).to eq(F1SalesCustom::Email::Source.all[5][:name])
     end
-
   end
 
   context 'when email is from jivochat' do
-    let(:email){ 
+    let(:email) do
       email = OpenStruct.new
       email.to = [email: 'jivochat@lojateste.f1sales.org']
       email.subject = '[Jivochat Lead] Marcio Klepacz'
       email.body = "nome: Marcio Teste\ntelefone: 11981587311\nemail: marcio@teste.com.br\nproduto: Honda Fit\nmensagem: Tem interesse no carro"
 
       email
-    }
+    end
 
     let(:parsed_email) { described_class.new(email).parse }
 
@@ -278,6 +271,4 @@ RSpec.describe F1SalesCustom::Email::Parser do
       expect(parsed_email[:product]).to eq('Honda Fit')
     end
   end
-
-
 end
