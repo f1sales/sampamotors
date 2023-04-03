@@ -1,5 +1,4 @@
 require 'sampamotors/version'
-
 require 'f1sales_custom/parser'
 require 'f1sales_custom/source'
 require 'f1sales_custom/hooks'
@@ -12,8 +11,10 @@ module Sampamotors
     class << self
       def switch_source(lead)
         source_name = lead.source.name
-        if source_name.downcase.include?('facebook') && lead.message.downcase.include?('seminovos')
+        if source_name.downcase['facebook'] && lead.message.downcase['seminovos']
           "#{source_name} - Seminovos"
+        elsif source_name['myHonda'] && !lead.attachments.empty?
+          nil
         else
           source_name
         end

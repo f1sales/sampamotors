@@ -32,5 +32,36 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
         end
       end
     end
+
+    context 'when lead come from myHonda' do
+      let(:lead) do
+        lead = OpenStruct.new
+        lead.source = source
+        lead.attachments = []
+
+        lead
+      end
+
+      let(:source) do
+        source = OpenStruct.new
+        source.name = 'myHonda'
+
+        source
+      end
+
+      let(:switch_source) { described_class.switch_source(lead) }
+
+      it 'returns source myHonda' do
+        expect(switch_source).to eq('myHonda')
+      end
+
+      context 'when lead come by email' do
+        before { lead.attachments = ['https://myhonda.force.com/leads/s/lead/00Q4M'] }
+
+        it 'return source nil' do
+          expect(switch_source).to be_nil
+        end
+      end
+    end
   end
 end
