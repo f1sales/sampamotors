@@ -11,10 +11,11 @@ module Sampamotors
   class F1SalesCustom::Hooks::Lead
     class << self
       def switch_source(lead)
-        if lead.source.name.downcase.include?('facebook') and lead.message.downcase.include?('seminovos')
-          lead.source.name + ' - Seminovos'
+        source_name = lead.source.name
+        if source_name.downcase.include?('facebook') && lead.message.downcase.include?('seminovos')
+          "#{source_name} - Seminovos"
         else
-          lead.source.name
+          source_name
         end
       end
     end
@@ -79,7 +80,7 @@ module Sampamotors
       is_about_serice = @email.subject.downcase.include?(ACCESSORIES)
 
       parsed_email = @email.body.colons_to_hash
-      if is_about_sell or is_about_price
+      if is_about_sell || is_about_price
         parsed_email = @email.body.colons_to_hash(
           %r{(Nome|Origem|Cambio|Ano|Portas|Quilometragem|Marca/Modelo|Mensagem|E-mail|Email|Tipo|Telefone|produto|mensagem).*?:}, false
         )
@@ -93,7 +94,7 @@ module Sampamotors
       source = all_sources[4] if is_about_after_sell
       source = all_sources[2] if is_about_serice
 
-      product = parsed_email['produto'] || parsed_email['marcamodelo']
+      product = parsed_email['produto'] || parsed_email['marcamodelo'] || ''
 
       if is_about_sell
         message += "Portas: #{parsed_email['portas']} Quilometragem: #{parsed_email['quilometragem']} Ano: #{parsed_email['ano']} Cambio: #{parsed_email['cambio']}"
@@ -110,7 +111,7 @@ module Sampamotors
           phone: parsed_email['telefone'].tr('^0-9', ''),
           email: parsed_email['email']
         },
-        product: { name: product || '' },
+        product: { name: product },
         message: message,
         description: description
       }
