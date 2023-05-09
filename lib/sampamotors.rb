@@ -10,11 +10,33 @@ module Sampamotors
   class F1SalesCustom::Hooks::Lead
     class << self
       def switch_source(lead)
-        source_name = lead.source.name
+        @lead = lead
         if source_name.downcase['facebook'] && lead.message.downcase['seminovos']
           "#{source_name} - Seminovos"
-        elsif source_name['myHonda'] && !lead.attachments.empty?
-          nil
+        elsif source_name['myHonda']
+          my_honda_source
+        else
+          source_name
+        end
+      end
+
+      def source_name
+        @lead.source.name
+      end
+
+      def lead_description
+        @lead.description
+      end
+
+      def lead_attachments
+        @lead.attachments
+      end
+
+      def my_honda_source
+        return nil unless lead_attachments.empty?
+
+        if lead_description['Serviços']
+          "#{source_name} - Peças"
         else
           source_name
         end

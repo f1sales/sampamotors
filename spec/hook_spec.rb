@@ -1,22 +1,29 @@
 require 'ostruct'
+require 'byebug'
 
 RSpec.describe F1SalesCustom::Hooks::Lead do
   describe '.switch_source(lead)' do
+    let(:lead) do
+      lead = OpenStruct.new
+      lead.source = source
+      lead.message = ''
+      lead.attachments = []
+      lead.description = ''
+
+      lead
+    end
+
+    let(:source) do
+      source = OpenStruct.new
+      source.name = ''
+
+      source
+    end
+
+    let(:switch_source) { described_class.switch_source(lead) }
+
     context 'when lead come from Facebook' do
-      let(:lead) do
-        lead = OpenStruct.new
-        lead.source = source
-        lead.message = ''
-
-        lead
-      end
-
-      let(:source) do
-        source = OpenStruct.new
-        source.name = 'Facebook'
-
-        source
-      end
+      before { source.name = 'Facebook' }
 
       let(:switch_source) { described_class.switch_source(lead) }
 
@@ -34,20 +41,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
     end
 
     context 'when lead come from myHonda' do
-      let(:lead) do
-        lead = OpenStruct.new
-        lead.source = source
-        lead.attachments = []
-
-        lead
-      end
-
-      let(:source) do
-        source = OpenStruct.new
-        source.name = 'myHonda'
-
-        source
-      end
+      before { source.name = 'myHonda' }
 
       let(:switch_source) { described_class.switch_source(lead) }
 
@@ -60,6 +54,14 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
 
         it 'return source nil' do
           expect(switch_source).to be_nil
+        end
+      end
+
+      context 'when lead come with Serviços e Peças' do
+        before { lead.description = 'Concessionária: SAMPA.; Código: 1617974; Tipo: CS - Serviços e Peças' }
+
+        it 'returns Source - Peças' do
+          expect(switch_source).to eq('myHonda - Peças')
         end
       end
     end
