@@ -32,10 +32,16 @@ module Sampamotors
         @lead.attachments
       end
 
+      def lead_product
+        @lead.product.name.downcase
+      end
+
       def my_honda_source
         return nil unless lead_attachments.empty?
 
-        if lead_description['Serviços']
+        if lead_product['agendamento']
+          "#{source_name} - Agendamento"
+        elsif lead_description['Serviços']
           "#{source_name} - Peças"
         else
           source_name
@@ -90,10 +96,10 @@ module Sampamotors
 
     private
 
-    WANTS_TO_SELL = 'solicitação de venda'
-    PRICE = 'cotação'
-    AFTER_SELL = 'pós vendas'
-    ACCESSORIES = 'acessorios'
+    WANTS_TO_SELL = 'solicitação de venda'.freeze
+    PRICE = 'cotação'.freeze
+    AFTER_SELL = 'pós vendas'.freeze
+    ACCESSORIES = 'acessorios'.freeze
 
     def parse_website
       all_sources = F1SalesCustom::Email::Source.all
